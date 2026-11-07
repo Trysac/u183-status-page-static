@@ -9,4 +9,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- feat: initial release of static status page generator with validation and CLI
 - Initial project structure from the factory utility template.

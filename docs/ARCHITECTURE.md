@@ -1,30 +1,22 @@
 # Architecture
 
-## Overview
+`@trysac/status-page-static` is designed around a functional pipeline:
 
-`@trysac/status-page-static` is a small, dependency-free TypeScript library published to npm as ES modules with type
-declarations. Render a static, script-free HTML status page from a JSON document of components and incidents, with escaping, UTC times and an injected clock
+1. **Validation & Normalization (`parseStatus`)**:
+   - Enforces payload bounds (max document length, max components, max incidents, max updates per incident, max body size).
+   - Checks ISO 8601 timestamps with explicit time zone representation (`Z` or `+/-HH:mm`).
+   - Verifies component ID uniqueness and reference integrity in incidents.
+   - Generates typed `StatusDoc` objects or throws typed `StatusPageError`.
 
-## Modules
+2. **Overall Status Calculation (`overallStatus`)**:
+   - Maps components to the highest severity level:
+     `major_outage` > `partial_outage` > `degraded` > `maintenance` > `operational`.
 
-| Module | Responsibility |
-|---|---|
-| `src/index.ts` | Public API. Everything consumers import is exported from here. |
+3. **Deterministic HTML Rendering (`renderPage`)**:
+   - Injects the current reference clock (`opts.now`).
+   - Partitions incidents into active vs. past based on whether the latest update has status `resolved`.
+   - Inlines CSS without any `<script>`, `<link>`, or remote resource references.
+   - Escapes HTML special characters (`&`, `<`, `>`, `"`, `'`) and converts newlines to `<br>`.
 
-Add a row when you add a module. Internal modules are not re-exported unless they are part of the public API.
-
-## Boundaries
-
-- No runtime dependencies by default; any addition is justified in [STACK.md](STACK.md).
-- No I/O at import time. Functions are pure unless their documentation says otherwise.
-- Errors are thrown as built-in error types (`TypeError`, `RangeError`) with actionable messages.
-
-## Build and distribution
-
-`npm run build` compiles `src/` to `dist/` with `tsconfig.build.json`. Only `dist/` is published
-(`files` in `package.json`).
-
-## Decisions
-
-Architectural decisions are recorded in [decisions/](decisions/), starting with
-[0001](decisions/0001-record-architecture-decisions.md).
+4. **CLI (`run`)**:
+   - Pure CLI runner injecting filesystem and console I/O interfaces for deterministic execution and complete testability.
