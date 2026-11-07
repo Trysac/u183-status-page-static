@@ -1,55 +1,40 @@
-# status-page-static
+# @trysac/status-page-static
 
-[![npm version](https://img.shields.io/npm/v/@trysac/status-page-static.svg)](https://www.npmjs.com/package/@trysac/status-page-static)
-[![license: MIT](https://img.shields.io/npm/l/@trysac/status-page-static.svg)](LICENSE)
-[![CI](https://github.com/Trysac/u183-status-page-static/actions/workflows/ci.yml/badge.svg)](https://github.com/Trysac/u183-status-page-static/actions/workflows/ci.yml)
-
-Render a static, script-free HTML status page from a JSON document of components and incidents, with escaping, UTC times and an injected clock
+Render a static, script-free HTML status page from a JSON document of components and incidents, with escaping, UTC times, and an injected clock.
 
 ## Problem
 
-Describe in two or three sentences the concrete problem this utility solves, who hits it, and why existing
-packages do not solve it well. Keep it factual; link to an issue or decision record when there is one.
+Small teams want a public status page but hosted status products cost money and add third-party scripts, while a hand-edited HTML page drifts and breaks. A status page is mostly a pure function of component states and incident updates. This library validates a small JSON document and renders one self-contained, escaped HTML page that any static host can serve.
 
-## Install
+## Installation
 
-```sh
+```bash
 npm install @trysac/status-page-static
 ```
 
-Requires Node.js 20 or newer. The package ships ES modules with TypeScript declarations.
+## Usage Example
 
-## Usage
+```typescript
+import { parseStatus, renderPage } from "@trysac/status-page-static";
 
-```ts
-import { greet } from "@trysac/status-page-static";
-
-// Build a greeting; surrounding whitespace is ignored.
-const message = greet("  Ada ");
-console.log(message); // "Hello, Ada!"
-
-try {
-  greet("   ");
-} catch (error) {
-  console.error((error as Error).message); // "name must not be empty"
-}
+const json = '{"title":"My Status","components":[],"incidents":[]}';
+const doc = parseStatus(json);
+const html = renderPage(doc, { now: new Date() });
+console.log(html);
 ```
 
-## API
+## Public API
 
-| Export | Signature | Description |
-|---|---|---|
-| `greet` | `(name: string) => string` | Placeholder API; replace it with the real one. |
+- `parseStatus(json: string, opts?: { maxLength?: number }): StatusDoc`: Validates JSON structure, types, and limits.
+- `overallStatus(components: { status: ComponentStatus }[]): ComponentStatus`: Calculates the worst component status.
+- `renderPage(doc: StatusDoc, opts: { now: Date; historyDays?: number }): string`: Generates HTML. Throws `TypeError` if inputs are invalid.
+- `StatusDoc`: Interface for the validated status structure.
+- `StatusPageError`: Error class with codes `INPUT_TOO_LARGE`, `INVALID_JSON`, `INVALID_DOC`, `LIMIT_EXCEEDED`.
 
-## Development
+## Why not hosted alternatives?
 
-```sh
-npm install
-npm run check   # lint, format, types, tests with coverage, docs, secrets
-```
+Hosted status pages often introduce third-party scripts and vendor lock-in. This utility is a single, pure, testable function that generates static HTML, allowing for full control and auditability without client-side dependencies.
 
-See [AGENTS.md](AGENTS.md) for the full command list and [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow.
+## Security
 
-## License
-
-[MIT](LICENSE) © 2026 Miguel Gomez
+See [docs/SECURITY.md](docs/SECURITY.md).

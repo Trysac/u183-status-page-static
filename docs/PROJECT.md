@@ -1,33 +1,32 @@
-# Project record: status-page-static
+# Project Information
 
 ## Objective
 
-Render a static, script-free HTML status page from a JSON document of components and incidents, with escaping, UTC times and an injected clock
-
-State the measurable outcome this utility must deliver and who it is for.
+Provide a lightweight, secure tool to generate public HTML status pages from version-controlled JSON files without vendor lock-in or third-party client-side dependencies.
 
 ## Scope
 
-In scope:
+- Validating input JSON against a strict schema.
+- Normalizing component and incident data.
+- Deterministic rendering of HTML containing only standard tags, without external CSS or JavaScript.
+- Providing a CLI for file-based status page updates.
 
-- The public API documented in the README.
+## Out-of-Scope
 
-Out of scope:
+- Uptime history bars.
+- Automated subscription or alerting systems.
+- RSS/Atom feeds.
+- Probing/Monitoring infrastructure (the utility does not fetch data).
+- UI themes or CSS customization.
 
-- List what this utility deliberately does not do.
+## Factory run u183 (measured from API usage)
 
-## Timeline
+| Phase | Model | Batch | Input | Output | Cache write | Cache read | Cost (USD) |
+|---|---|---|---|---|---|---|---|
+| generation | gemini-3.8-flash | yes | 4414 | 15844 | 0 | 0 | 0.0314 |
+| fix-1 | gemini-3.1-flash-lite | no | 53989 | 610 | 0 | 238406 | 0.0204 |
+| fix-2 | gemini-3.1-flash-lite | no | 35013 | 2081 | 0 | 67309 | 0.0136 |
+| audit | gemini-3.1-flash-lite | no | 33107 | 127 | 0 | 40739 | 0.0095 |
+| docs | gemini-3.1-flash-lite | no | 18089 | 1035 | 0 | 0 | 0.0061 |
 
-| Date | Milestone |
-|---|---|
-| 2026 | Repository created from the factory utility template. |
-
-## Effort metrics
-
-Measured values only. Leave "pending measurement" until a real figure is recorded; never estimate here.
-
-| Metric | Value | Source |
-|---|---|---|
-| Tokens (input / output) | pending measurement | factory ledger |
-| Hours (human) | pending measurement | time log |
-| Cost (USD) | pending measurement | factory ledger |
+Total: $0.0809. Prices: Anthropic list prices.
