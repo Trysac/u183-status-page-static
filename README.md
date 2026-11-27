@@ -8,9 +8,15 @@ Small teams want a public status page but hosted status products cost money and 
 
 ## Installation
 
-```bash
-npm install @trysac/status-page-static
+Not published to npm yet. Build it from a clone, then install it from the local path:
+
+```sh
+git clone https://github.com/Trysac/u183-status-page-static.git
+cd u183-status-page-static && npm ci && npm run build
+cd ../your-project && npm install ../u183-status-page-static
 ```
+
+Imports keep the package name: `import { ... } from "@trysac/status-page-static"`.
 
 ## Usage Example
 
